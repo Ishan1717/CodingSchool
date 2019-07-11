@@ -1,0 +1,265 @@
+import random
+
+###Create a text-based RPG combat program that allows choose a type of character and fight an enemy with a random character-type
+#Program should greet user, show them the types of characters available along with their stats (or a brief description of them, your choice), and then prompt them to select one.
+  #At least four different classes should exist with a general "Character" superclass.
+#At this point, program should create an instance of the selected character as well as randomly-generated enemy for the player to fight.
+  #random.uniform(0,1)
+
+#The program then enters the combat phase.
+#The player should be allowed to either Fight, Use a Skill (these skills may be made at your discretion), or to Defend. An attribute, speed, should determine who moves first.
+#This continues until either the HP of the player or the enemy becomes equal to or less than 0, at which point a message indicating the result is immediately printed and the user is prompted to indicate whether they'd like to fight the same enemey, fight a different one,  choose a different class, or quit. 
+#THe enemy will need to have some sort of discernment of how to act. The conditions on how an enemy chooses an act is up to you! One parameter: enemy should at least in part make a decision based on the last round.
+
+
+class Character():
+  def __init__(self):
+    self.maxHp = 10
+    self.hp = 10
+    self.defense = 10
+    self.atk = 10
+    self.speed = 10
+    self.usedSpecial = False
+  def attack(self, char):
+    temp = char.hp
+    char.hp = char.hp - self.atk + char.defense
+    if(char.hp>temp):
+      char.hp = temp
+    
+  def printStats(self):
+    print("HP: " + str(self.hp) + " / " + str(self.maxHp))
+    print("ATK: " + str(self.atk))
+    print("DEF: " + str(self.defense))
+  def defend(self):
+    self.defense = self.defense + 5
+  
+
+class Knight(Character):
+  def __init__(self):
+    super().__init__()
+    self.maxHp = 60
+    self.hp = 60
+    self.defense = 9
+    self.atk = 10
+    self.speed = 2
+    self.usedSpecial = False
+  def attack(self, char):
+    super().attack(char)
+    self.usedSpecial = False
+    self.defense = 9
+  def special(self, char):
+    if(self.usedSpecial == False):
+      print("Blocked all damage!")
+      self.usedSpecial = True
+      self.defense = 100
+    else:
+      print("Too Tired!")
+      self.usedSpecial = False
+  def printStats(self):
+    self.atk = 10
+    self.defense = 9
+    super().printStats()
+  def defend(self):
+    super().defend()
+    self.usedSpecial = False
+
+class Mage(Character):
+  def __init__(self):
+    super().__init__()
+    self.maxHp = 40
+    self.hp = 40
+    self.defense = 3
+    self.atk = 17
+    self.speed = 3
+  def attack(self, char):
+    super().attack(char)
+    self.usedSpecial == False
+    self.atk = 17
+    self.defense = 3
+  def special(self, char):
+    if(self.usedSpecial == False):
+      print("ATK raised by 6!")
+      self.usedSpecial = True
+      self.atk = 23
+      self.defense = 3
+      self.attack(char)
+      self.atk = 17
+    else:
+      print("Too Tired!")
+      self.usedSpecial = False
+      self.defense = 3
+  def printStats(self):
+    self.atk = 17
+    self.defense = 3
+    super().printStats()
+  def defend(self):
+    super().defend()
+    self.defense = 8
+    self.atk = 17
+    self.usedSpecial = False
+  
+
+class Berserker(Character):
+  def __init__(self):
+    super().__init__()
+    self.maxHp = 75
+    self.hp = 75
+    self.defense = 0
+    self.atk = 12
+    self.speed = 1
+  def attack(self, char):
+    super().attack(char)
+    self.usedSpecial = False
+    self.defense = 0
+  def special(self, char):
+    if(self.usedSpecial == False):
+      print("Healed 8 hp!")
+      self.usedSpecial = True
+      self.hp = self.hp + 8
+      if(self.hp>75):
+        self.hp = 75
+      self.defense = 0
+    else:
+      print("Too Tired!")
+      self.usedSpecial = False
+      self.defense = 0
+  def printStats(self):
+    self.atk = 12
+    self.defense = 0
+    super().printStats()
+  def defend(self):
+    super().defend()
+    self.usedSpecial = False
+
+
+
+print()
+print()
+charType = input("Which type of character do you want? Knight has the best defense, Mage has the best attack, and Berserker has the best hp. Mage is the fastest, Knight is in the middle, and Berserker is the slowest. Knight's special is blocking all damage, Mage's skill is increasing attack, and berserker's special is healing some hp.")
+if(charType == "Knight"):
+  user = Knight()
+elif(charType == "Mage"):
+  user = Mage()
+else:
+  user = Berserker()
+
+rand = random.uniform(0,1)
+if(rand > 0.66):
+  enemy = Knight()
+  enemyType = "Knight"
+elif(rand > 0.33):
+  enemy = Mage()
+  enemyType = "Mage"
+else:
+  enemy = Berserker()
+  enemyType = "Berserker"
+
+print("You are up against a " + enemyType + ".")
+if(enemy.speed>user.speed):
+  print("The enemy is faster than you.")
+  winner = 0
+  while(winner == 0):
+    print()
+    print()
+    print()
+    print()
+    print()
+    print()
+    print()
+    print("Enemy Stats:")
+    print()
+    enemy.printStats()
+    if(enemy.hp>(enemy.maxHp/2)):
+      rand = random.uniform(0,1)
+      if(rand > 0.5):
+        print("Enemy is attacking!")
+        enemy.attack(user)
+      else:
+        print("Enemy is using special!")
+        enemy.special(user)
+    else:
+      rand = random.uniform(0,1)
+      if(rand > 0.5):
+        print("Enemy is defending!")
+        enemy.defend()
+      else:
+        print("Enemy is using special!")
+        enemy.special(user)
+    if(user.hp<=0):
+      winner = -1
+      break
+    print()
+    print("Your stats: ")
+    print()
+    user.printStats()
+    command = input("What do you want to do? Attack, Defend, or Special?")
+    if(command == "Attack"):
+      print("You are attacking!")
+      user.attack(enemy)
+    elif(command == "Defend"):
+      print("You are defending!")
+      user.defend()
+    else:
+      print("You are using your special!")
+      user.special(enemy)
+    if(enemy.hp<=0):
+      winner = 1
+      break
+
+else:
+  print("You are faster than the enemy.")
+  winner = 0
+  while(winner == 0):
+    print()
+    print()
+    print()
+    print()
+    print()
+    print()
+    print()
+    print()
+    print("Your stats:")
+    print()
+    user.printStats()
+    print()
+    print("Enemy's stats:")
+    print()
+    enemy.printStats()
+    command = input("What do you want to do? Attack, Defend, or Special?")
+    if(command == "Attack"):
+      print("You are attacking")
+      user.attack(enemy)
+    elif(command == "Defend"):
+      print("You are defending")
+      user.defend()
+    else:
+      print("You are using your special")
+      user.special(enemy)
+    if(enemy.hp<=0):
+      winner = 1
+      break
+    if(enemy.hp>(enemy.maxHp/2)):
+      rand = random.uniform(0,1)
+      if(rand > 0.5):
+        print("Enemy is attacking you!")
+        enemy.attack(user)
+      else:
+        print("enemy is using special!")
+        enemy.special(user)
+    else:
+      rand = random.uniform(0,1)
+      if(rand > 0.5):
+        print("Enemy is defending!")
+        enemy.defend()
+      else:
+        print("Enemy is using special!")
+        enemy.special(user)
+    if(user.hp<=0):
+      winner = -1
+      break
+if(winner>0):
+  print("You win!")
+elif(winner<0):
+  print("You lose")
+else:
+  print("0")
