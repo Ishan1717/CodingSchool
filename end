@@ -1,0 +1,46 @@
+#1001011
+#abaca
+class Node:
+  def __init__ (self, freq, data):
+    self.freq = freq
+    self.data = data
+    self.left = None
+    self.right = None
+  def setLeft(self, newNode):
+    self.left = newNode
+  def setRight(self, newNode):
+    self.right = newNode
+  def incrementFreq(self):
+    self.freq = self.freq + 1
+print("Hello")
+node1 = Node(0,"IT")
+node2 = Node(0,"IT")
+node3 = Node(0,"B")
+node4 = Node(0,"C")
+node5 = Node(0,"A")
+node1.setRight(node5)
+node1.setLeft(node2)
+node2.setLeft(node3)
+node2.setRight(node4)
+currentNode = node1
+inp = input("binary string: ")
+inpList = [char for char in inp]
+print(inpList)
+currentNode = node1
+check = True
+while(check):
+  if(not(currentNode.data == "IT")):
+    print(currentNode.data)
+    currentNode.incrementFreq()
+    currentNode = node1
+    if(len(inpList)==0):
+      check=False
+  else:
+    currentPop = inpList.pop(0)
+    if(currentPop=='0'):
+      currentNode.incrementFreq()
+      currentNode = currentNode.left
+    elif(currentPop=='1'):
+      currentNode.incrementFreq()
+      currentNode = currentNode.right
+    
